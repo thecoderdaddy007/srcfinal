@@ -1,0 +1,1264 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriTradePro - Farm Machinery & Crop Packaging Solutions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-green: #16a34a;
+            --dark-green: #15803d;
+            --light-green: #dcfce7;
+            --accent-green: #22c55e;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f9fafb;
+            color: #374151;
+            line-height: 1.6;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-green) 50%, #84cc16 100%);
+        }
+        .product-card {
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background: white;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        .cart-item {
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .floating-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        .floating-button:hover {
+            transform: scale(1.1);
+        }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .spec-badge {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            background-color: var(--light-green);
+            color: var(--dark-green);
+            margin: 0.15rem;
+        }
+        .feature-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        .feature-list li {
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: flex-start;
+        }
+        .feature-list li i {
+            color: var(--primary-green);
+            margin-right: 0.5rem;
+            margin-top: 0.25rem;
+        }
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--primary-green);
+            color: white;
+            font-size: 0.75rem;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .cart-count.hidden {
+            display: none;
+        }
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            height: 100%;
+            background: white;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            padding: 20px;
+        }
+        .mobile-menu.open {
+            right: 0;
+        }
+        .mobile-menu ul li {
+            margin-bottom: 1rem;
+        }
+        .mobile-menu ul li a {
+            display: block;
+            padding: 10px;
+            color: #374151;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+        .mobile-menu ul li a:hover {
+            background-color: var(--light-green);
+            color: var(--primary-green);
+        }
+        .backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+        .backdrop.active {
+            display: block;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary-green);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            animation: slideInRight 0.3s ease;
+        }
+        @keyframes slideInRight {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+        .hero-slideshow {
+            position: relative;
+            height: 70vh;
+            overflow: hidden;
+        }
+        .hero-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        .hero-slide.active {
+            opacity: 1;
+        }
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .stats-card {
+            transition: transform 0.3s ease;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .category-card {
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background: white;
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        .category-icon {
+            font-size: 3rem;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+        .testimonial-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .footer-link {
+            color: #9ca3af;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        .footer-link:hover {
+            color: white;
+        }
+        @media (max-width: 768px) {
+            .hero-slideshow {
+                height: 50vh;
+            }
+            .hero-content {
+                padding: 0 1rem;
+            }
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+            .hero-content p {
+                font-size: 1.1rem;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .product-grid {
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+        @media (max-width: 480px) {
+            .hero-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .floating-button {
+                width: 50px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-bold text-green-600">AgriTrade Pro</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-6">
+                        <a href="#home" class="text-gray-900 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Home</a>
+                        <a href="#machinery" class="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Machinery</a>
+                        <a href="#packaging" class="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Packaging</a>
+                        <a href="#services" class="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Services</a>
+                        <a href="#contact" class="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Contact</a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="searchBtn" class="text-gray-500 hover:text-green-600 focus:outline-none" aria-label="Search">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button id="cartBtn" class="relative text-gray-500 hover:text-green-600 focus:outline-none" aria-label="View cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cartCount" class="cart-count hidden">0</span>
+                    </button>
+                    <button id="mobileMenuBtn" class="md:hidden text-gray-500 hover:text-green-600 focus:outline-none" aria-label="Menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Mobile Menu -->
+    <div class="backdrop" id="backdrop"></div>
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold text-green-600">Menu</h2>
+            <button id="closeMenuBtn" class="text-gray-500 hover:text-green-600">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#machinery">Machinery</a></li>
+            <li><a href="#packaging">Packaging</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </div>
+    <!-- Hero Section with Slideshow -->
+    <section id="home" class="hero-slideshow">
+        <div class="hero-slide active" style="background-image: ('C:\Users\sinha\Downloads\WhatsApp Image 2025-07-24 at 17.51.31_6a69f478.jpg')">
+            <div class="hero-overlay">
+                <div class="hero-content text-center text-white max-w-4xl px-4">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-6">Premium Agricultural Solutions</h1>
+                    <p class="text-xl md:text-2xl mb-8 opacity-90">Advanced Farm Machinery & Sustainable Crop Packaging Systems</p>
+                    <div class="hero-buttons flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="#machinery" class="bg-white text-green-800 px-8 py-3 rounded-full font-semibold text-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                            Explore Machinery
+                        </a>
+                        <a href="#packaging" class="border-2 border-white text-white px-8 py-3 rounded-full font-semibold text-lg hover:bg-white hover:text-green-800 transition duration-300">
+                            See Packaging Solutions
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-slide" style="background-image: url('C:\Users\sinha\Downloads\WhatsApp Image 2025-07-24 at 17.51.31_6a69f478.jpg')">
+            <div class="hero-overlay">
+                <div class="hero-content text-center text-white max-w-4xl px-4">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-6">Innovative Farming Technology</h1>
+                    <p class="text-xl md:text-2xl mb-8 opacity-90">Boost productivity with our cutting-edge agricultural equipment</p>
+                    <div class="hero-buttons flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="#machinery" class="bg-white text-green-800 px-8 py-3 rounded-full font-semibold text-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                            View Machinery
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-slide" style="background-image: url('C:\Users\sinha\Downloads\WhatsApp Image 2025-07-24 at 17.51.31_6a69f478.jpg')">
+            <div class="hero-overlay">
+                <div class="hero-content text-center text-white max-w-4xl px-4">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-6">Sustainable Packaging Solutions</h1>
+                    <p class="text-xl md:text-2xl mb-8 opacity-90">Protect your harvest with eco-friendly packaging systems</p>
+                    <div class="hero-buttons flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="#packaging" class="bg-white text-green-800 px-8 py-3 rounded-full font-semibold text-lg hover:bg-gray-100 transition duration-300 transform hover:scale-105">
+                            View Packaging
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Stats Section -->
+    <section class="bg-white py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 stats-grid">
+                <div class="stats-card">
+                    <div class="text-3xl font-bold text-green-600">500+</div>
+                    <div class="text-gray-600 mt-2">Farm Machines Sold</div>
+                </div>
+                <div class="stats-card">
+                    <div class="text-3xl font-bold text-green-600">100K+</div>
+                    <div class="text-gray-600 mt-2">Tons Packaged</div>
+                </div>
+                <div class="stats-card">
+                    <div class="text-3xl font-bold text-green-600">25+</div>
+                    <div class="text-gray-600 mt-2">Countries Served</div>
+                </div>
+                <div class="stats-card">
+                    <div class="text-3xl font-bold text-green-600">15+</div>
+                    <div class="text-gray-600 mt-2">Years Experience</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Categories Section -->
+    <section class="py-16 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Our Product Categories</h2>
+                <p class="text-gray-600 max-w-3xl mx-auto">Discover our premium range of agricultural solutions designed for efficiency and sustainability</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <a href="#machinery" class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-tractor"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Farm Machines & Tools</h3>
+                    <p class="text-gray-600 mb-4">High-performance agricultural machinery for all farming needs</p>
+                    <button class="mt-4 bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition duration-300">
+                        Explore Machinery
+                    </button>
+                </a>
+                <a href="#packaging" class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-box-open"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Packaging Solutions</h3>
+                    <p class="text-gray-600 mb-4">Innovative packaging systems to preserve freshness and extend shelf life</p>
+                    <button class="mt-4 bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition duration-300">
+                        View Packaging
+                    </button>
+                </a>
+            </div>
+        </div>
+    </section>
+    <!-- Machinery Section -->
+    <section id="machinery" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Farm Machines & Tools</h2>
+            <p class="text-gray-600 max-w-3xl mx-auto">Discover our premium range of agricultural machinery designed for efficiency, durability, and maximum productivity in modern farming operations.</p>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 product-grid">
+            <!-- Product 1: 2ZS-4 Rice Transplanter -->
+            <div class="product-card">
+                <div class="relative">
+                    <img src="C:\Users\sinha\Downloads\WhatsApp Image 2025-07-24 at 17.40.27_142f0730.jpg" alt="2ZS-4 Rice Transplanter" class="w-full h-48 object-cover">
+                    <div class="absolute top-2 right-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">Best Seller</div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg mb-1">2ZS-4 Rice Transplanter</h3>
+                    <div class="flex flex-wrap gap-2 mb-2">
+                        <span class="spec-badge">4-Row</span>
+                        <span class="spec-badge">Gasoline 2.6kW</span>
+                        <span class="spec-badge">120-210mm Spacing</span>
+                    </div>
+                    <ul class="text-gray-600 text-sm space-y-1 mb-3 feature-list">
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>Push-Type Manual Operation</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>Gasoline Engine (2.6 kW @ 3000 RPM)</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>4 Row Planting</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>Adjustable Plant Spacing (120–210 mm)</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>15–35 mm Adjustable Depth</span>
+                        </li>
+                    </ul>
+                    <div class="flex items-center justify-between mt-3">
+                        <span class="text-lg font-bold text-green-600">₹85,000</span>
+                        <button onclick="addToCart('2ZS-4 Rice Transplanter', 85000, 'C:\Users\sinha\Downloads\WhatsApp Image 2025-07-24 at 17.40.27_142f0730.jpg')" class="bg-green-600 text-white p-2 rounded-full hover:bg-green-700 transition duration-300" aria-label="Add to cart">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Product 2: CY-6 Ride-On Transplanter -->
+            <div class="product-card">
+                <div class="relative">
+                    <img src="C:\Users\sinha\Downloads\WhatsApp Image 2025-07-22 at 16.19.17_0482cc44.jpg" alt="CY-6 Ride-On Transplanter" class="w-full h-48 object-cover">
+                    <div class="absolute top-2 right-2 bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">Best Seller</div>
+                </div>
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg mb-1">CY-6 Ride-On Transplanter</h3>
+                    <div class="flex flex-wrap gap-2 mb-2">
+                        <span class="spec-badge">6-Row</span>
+                        <span class="spec-badge">Diesel 5.5HP</span>
+                        <span class="spec-badge">120/140mm Spacing</span>
+                    </div>
+                    <ul class="text-gray-600 text-sm space-y-1 mb-3 feature-list">
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>Ride-On Convenience</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>Diesel Powered (5.5 HP engine)</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>6 Rows Transplanted in One Pass</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>Consistent Row & Hill Spacing</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>Precise Planting, One Plant per Hill</span>
+                        </li>
+                    </ul>
+                    <div class="flex items-center justify-between mt-3">
+                        <span class="text-lg font-bold text-green-600">₹1,45,000</span>
+                        <button onclick="addToCart('CY-6 Ride-On Transplanter', 145000, 'C:\Users\sinha\Downloads\WhatsApp Image 2025-07-22 at 16.19.17_0482cc44.jpg')" class="bg-green-600 text-white p-2 rounded-full hover:bg-green-700 transition duration-300" aria-label="Add to cart">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Product 3: Precision Planter -->
+            <div class="product-card">
+                <img src="C:\Users\sinha\Downloads\WhatsApp Image 2025-07-22 at 16.19.17_0482cc44.jpg" alt="Precision Planter" class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg mb-1">Precision Planter</h3>
+                    <p class="text-gray-600 text-sm mb-2">24-Row, Variable Rate</p>
+                    <ul class="text-gray-600 text-sm space-y-1 mb-3 feature-list">
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>24-row planting system</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>Variable rate technology</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>GPS guidance system</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>Seed monitoring sensors</span>
+                        </li>
+                    </ul>
+                    <div class="flex items-center justify-between mt-3">
+                        <span class="text-lg font-bold text-green-600">₹3,20,000</span>
+                        <button onclick="addToCart('Precision Planter', 320000, 'C:\Users\sinha\Downloads\WhatsApp Image 2025-07-22 at 16.19.17_0482cc44.jpg')" class="bg-green-600 text-white p-2 rounded-full hover:bg-green-700 transition duration-300" aria-label="Add to cart">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Product 4: Smart Sprayer -->
+            <div class="product-card">
+                <img src="C:\Users\sinha\Downloads\WhatsApp Image 2025-07-15 at 16.58.43_4fb12cf2.jpg" alt="Smart Sprayer" class="w-full h-48 object-cover">
+                <div class="p-4">
+                    <h3 class="font-semibold text-lg mb-1">Smart Sprayer</h3>
+                    <p class="text-gray-600 text-sm mb-2">100ft Boom, AI Detection</p>
+                    <ul class="text-gray-600 text-sm space-y-1 mb-3 feature-list">
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>100ft boom width</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>AI-powered weed detection</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>Variable rate application</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-check-circle"></i>
+                            <span>Real-time drift control</span>
+                        </li>
+                    </ul>
+                    <div class="flex items-center justify-between mt-3">
+                        <span class="text-lg font-bold text-green-600">₹2,85,000</span>
+                        <button onclick="addToCart('Smart Sprayer', 285000, 'C:\Users\sinha\Downloads\WhatsApp Image 2025-07-15 at 16.58.43_4fb12cf2.jpg')" class="bg-green-600 text-white p-2 rounded-full hover:bg-green-700 transition duration-300" aria-label="Add to cart">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Packaging Solutions Section -->
+    <section id="packaging" class="bg-gray-100 py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Crop Packaging Solutions</h2>
+                <p class="text-gray-600 max-w-3xl mx-auto">Innovative packaging systems that preserve freshness, extend shelf life, and meet international export standards.</p>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 product-grid">
+                <!-- Product 1: Non-Woven Bags -->
+                <div class="product-card">
+                    <img src="C:\Users\sinha\AppData\Local\Microsoft\Windows\INetCache\IE\T0GN0FYY\Remove background project (3)[1].png" alt="Non-Woven Bags" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-1">Non-Woven Bags</h3>
+                        <p class="text-gray-600 text-sm mb-2">Eco-friendly, reusable bags made from spunbond polypropylene</p>
+                        <ul class="text-gray-600 text-sm space-y-1 mb-3 feature-list">
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <span>D-cut, W-cut, and V-cut styles</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <span>Tear-resistant, water-repellent</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <span>Custom colors & printing options</span>
+                            </li>
+                        </ul>
+                        <div class="flex items-center justify-between mt-3">
+                            <span class="text-lg font-bold text-green-600">₹12,500</span>
+                            <button onclick="addToCart('Non-Woven Bags', 12500, 'C:\Users\sinha\AppData\Local\Microsoft\Windows\INetCache\IE\T0GN0FYY\Remove background project (3)[1].png')" class="bg-green-600 text-white p-2 rounded-full hover:bg-green-700 transition duration-300" aria-label="Add to cart">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Product 2: EPE Foam Net -->
+                <div class="product-card">
+                    <img src="C:\Users\sinha\AppData\Local\Microsoft\Windows\INetCache\IE\H17H86BU\Remove background project (1)[1].png" alt="EPE Foam Net" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-1">EPE Foam Net</h3>
+                        <p class="text-gray-600 text-sm mb-2">Cushioning mesh for delicate items</p>
+                        <ul class="text-gray-600 text-sm space-y-1 mb-3 feature-list">
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <span>Soft, non-toxic, recyclable foam</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <span>Perfect for fruits & fragile items</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <span>Prevents spoilage with air circulation</span>
+                            </li>
+                        </ul>
+                        <div class="flex items-center justify-between mt-3">
+                            <span class="text-lg font-bold text-green-600">₹8,900</span>
+                            <button onclick="addToCart('EPE Foam Net', 8900, 'C:\Users\sinha\AppData\Local\Microsoft\Windows\INetCache\IE\H17H86BU\Remove background project (1)[1].png')" class="bg-green-600 text-white p-2 rounded-full hover:bg-green-700 transition duration-300" aria-label="Add to cart">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Product 3: Fruit Production Leno Bag -->
+                <div class="product-card">
+                    <img src="C:\Users\sinha\Downloads\WhatsApp Image 2025-07-19 at 18.13.33_0444e967.jpg" alt="Fruit Protection Bag" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-1">Fruit Protection Bag</h3>
+                        <p class="text-gray-600 text-sm mb-2">Breathable mesh bags for produce storage</p>
+                        <ul class="text-gray-600 text-sm space-y-1 mb-3 feature-list">
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <span>UV-stabilized, strong polypropylene</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <span>Reusable with drawstring/loop options</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <span>Available from 5kg to 50kg</span>
+                            </li>
+                        </ul>
+                        <div class="flex items-center justify-between mt-3">
+                            <span class="text-lg font-bold text-green-600">₹18,700</span>
+                            <button onclick="addToCart('Fruit Protection Bag', 18700, 'C:\Users\sinha\Downloads\WhatsApp Image 2025-07-19 at 18.13.33_0444e967.jpg')" class="bg-green-600 text-white p-2 rounded-full hover:bg-green-700 transition duration-300" aria-label="Add to cart">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Product 4: PP Woven Bags -->
+                <!--div class="product-card">
+                    <img src="C:\Users\sinha\AppData\Local\Microsoft\Windows\INetCache\IE\T0GN0FYY\Remove background project (4)[1].png" alt="PP Woven Bags" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg mb-1">Woven Bags</h3>
+                        <p class="text-gray-600 text-sm mb-2">Heavy-duty sacks for industrial use</p>
+                        <ul class="text-gray-600 text-sm space-y-1 mb-3 feature-list">
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <span>With/without liner, laminated options</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <span>Resistant to tear, puncture & moisture</span>
+                            </li>
+                            <li>
+                                <i class="fas fa-check-circle"></i>
+                                <span>Custom printing & UV protection</span>
+                            </li>
+                        </ul>
+                        <div class="flex items-center justify-between mt-3">
+                            <span class="text-lg font-bold text-green-600">₹14,200</span>
+                            <button onclick="addToCart('Woven Bags', 14200, 'C:\Users\sinha\AppData\Local\Microsoft\Windows\INetCache\IE\T0GN0FYY\Remove background project (4)[1].png')" class="bg-green-600 text-white p-2 rounded-full hover:bg-green-700 transition duration-300" aria-label="Add to cart">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div-->
+            </div>
+        </div>
+    </section>
+    <!-- Services Section -->
+    <section id="services" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Comprehensive Agricultural Services</h2>
+            <p class="text-gray-600 max-w-3xl mx-auto">Beyond equipment, we provide complete solutions for your farming operation.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-white p-8 rounded-lg shadow-md text-center">
+                <div class="text-4xl text-green-600 mb-4">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-4">Installation & Training</h3>
+                <p class="text-gray-600 mb-4">Professional installation of all machinery and comprehensive training for your team to ensure optimal operation and safety.</p>
+                <ul class="text-left text-sm text-gray-600 space-y-2">
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                        <span>On-site setup and calibration</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                        <span>Operator training programs</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                        <span>Safety protocols implementation</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                        <span>Maintenance guide provision</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="bg-white p-8 rounded-lg shadow-md text-center">
+                <div class="text-4xl text-green-600 mb-4">
+                    <i class="fas fa-wrench"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-4">Maintenance & Support</h3>
+                <p class="text-gray-600 mb-4">Regular maintenance programs and 24/7 technical support to minimize downtime and maximize equipment lifespan.</p>
+                <ul class="text-left text-sm text-gray-600 space-y-2">
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                        <span>Scheduled servicing programs</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                        <span>Emergency repair services</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                        <span>Remote diagnostics support</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                        <span>Spare parts supply</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="bg-white p-8 rounded-lg shadow-md text-center">
+                <div class="text-4xl text-green-600 mb-4">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3 class="text-xl font-semibold mb-4">Consultation & Planning</h3>
+                <p class="text-gray-600 mb-4">Expert agricultural consultants to help you plan the perfect equipment setup for your specific crops and farm size.</p>
+                <ul class="text-left text-sm text-gray-600 space-y-2">
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                        <span>Farm assessment and analysis</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                        <span>Equipment selection guidance</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                        <span>ROI analysis and projections</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-600 mt-1 mr-2"></i>
+                        <span>Expansion planning support</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <!-- Testimonials -->
+    <section class="bg-green-50 py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">What Our Customers Say</h2>
+                <p class="text-gray-600 max-w-3xl mx-auto">Hear from farmers who have transformed their operations with our solutions</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="testimonial-card">
+                    <div class="flex items-center mb-4">
+                        <div class="text-yellow-400 flex">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">"The 2ZS-4 Rice Transplanter has transformed our rice farming operation. It's easy to operate and has significantly reduced our planting time while improving plant spacing consistency."</p>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white font-bold">RS</div>
+                        <div class="ml-3">
+                            <div class="font-semibold">Rajesh Sharma</div>
+                            <div class="text-sm text-gray-500">Punjab Rice Farmer</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="flex items-center mb-4">
+                        <div class="text-yellow-400 flex">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">"The Non-Woven Bags have extended our produce shelf life by 40%. The after-sales support team is always available when we need assistance. Highly recommended for packaging solutions!"</p>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white font-bold">PM</div>
+                        <div class="ml-3">
+                            <div class="font-semibold">Priya Mehta</div>
+                            <div class="text-sm text-gray-500">Fresh Produce Exporter</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="flex items-center mb-4">
+                        <div class="text-yellow-400 flex">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">"From consultation to installation, AgriTradePro provided exceptional service. Their CY-6 Ride-On Transplanter has been crucial for our large-scale farming operations. The ROI was evident within the first season."</p>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center text-white font-bold">VK</div>
+                        <div class="ml-3">
+                            <div class="font-semibold">Vikram Kumar</div>
+                            <div class="text-sm text-gray-500">Commercial Farm Owner</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Contact CTA -->
+    <section class="bg-green-600 text-white py-16">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold mb-6">Ready to Transform Your Agricultural Operation?</h2>
+            <p class="text-lg mb-8 opacity-90">Contact our experts today for a personalized consultation and equipment quote.</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#contact" class="bg-white text-green-800 px-8 py-3 rounded-lg font-semibold text-lg hover:bg-gray-100 transition duration-300">
+                    Request Consultation
+                </a>
+                <a href="tel:+917415286971" class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold text-lg hover:bg-white hover:text-green-800 transition duration-300 flex items-center justify-center">
+                    <i class="fas fa-phone mr-2"></i> Call Us: +91 74152 86971
+                </a>
+            </div>
+        </div>
+    </section>
+    <!-- Contact Form -->
+    <section id="contact" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Request Information or Quote</h2>
+            <form id="quoteForm" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+                        <input type="text" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email Address *</label>
+                        <input type="email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600" value="agritradeproofficial@gmail.com">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                        <input type="tel" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">State</label>
+                        <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600">
+                            <option>Select State</option>
+                            <option>Madhya Pradesh</option>
+                            <option>Uttar Pradesh</option>
+                            <option>Maharashtra</option>
+                            <option>West Bengal</option>
+                            <option>Gujarat</option>
+                            <option>Punjab</option>
+                            <option>Haryana</option>
+                            <option>Karnataka</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Interested In *</label>
+                    <div class="flex flex-wrap gap-3">
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="rounded text-green-600 focus:ring-green-600" checked>
+                            <span class="ml-2 text-sm">Farm Machinery</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="checkbox" class="rounded text-green-600 focus:ring-green-600" checked>
+                            <span class="ml-2 text-sm">Packaging Solutions</span>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Message</label>
+                    <textarea rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600"></textarea>
+                </div>
+                <div>
+                    <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-300">
+                        Submit Request
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">AgriTradePro</h3>
+                    <p class="text-gray-400 mb-4">Your trusted partner in agricultural innovation and efficiency.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-300" aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-300" aria-label="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-300" aria-label="LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition duration-300" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Quick Links</h4>
+                    <ul>
+                        <li><a href="#home" class="footer-link">Home</a></li>
+                        <li><a href="#machinery" class="footer-link">Farm Machines</a></li>
+                        <li><a href="#packaging" class="footer-link">Packaging Solutions</a></li>
+                        <li><a href="#services" class="footer-link">Services</a></li>
+                        <li><a href="#contact" class="footer-link">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Office Address</h4>
+                    <ul class="text-gray-400 space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt mt-1 mr-2"></i>
+                            <span>Office C, 158, D G Heights, near Anand Motors, Bhopal, Madhya Pradesh 462011</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-phone mr-2"></i>
+                            <span>+91 74152 86971</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-envelope mr-2"></i>
+                            <span>agritradeproofficial@gmail.com</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-clock mr-2"></i>
+                            <span>Mon-Fri: 8AM-6PM</span>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Services</h4>
+                    <ul>
+                        <li><a href="#" class="footer-link">Installation</a></li>
+                        <li><a href="#" class="footer-link">Maintenance</a></li>
+                        <li><a href="#" class="footer-link">Training</a></li>
+                        <li><a href="#" class="footer-link">Consultation</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 AgriTradePro. All rights reserved.</p>
+                <p class="mt-2">Specializing in advanced agricultural machinery and sustainable crop packaging solutions.</p>
+            </div>
+        </div>
+    </footer>
+    <!-- Floating Cart Button -->
+    <div class="floating-button bg-green-600 text-white" onclick="toggleCart()" aria-label="Open cart">
+        <i class="fas fa-shopping-cart text-xl"></i>
+        <span id="floatingCartCount" class="cart-count hidden">0</span>
+    </div>
+    <!-- Cart Sidebar -->
+    <div id="cartSidebar" class="fixed inset-y-0 right-0 w-96 bg-white shadow-xl transform translate-x-full transition-transform duration-300 z-50">
+        <div class="h-full flex flex-col">
+            <div class="p-4 border-b flex justify-between items-center">
+                <h3 class="text-lg font-semibold">Shopping Cart (<span id="cartCountSidebar">0</span>)</h3>
+                <button onclick="closeCart()" class="text-gray-500 hover:text-gray-700" aria-label="Close cart">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="cartItems" class="flex-grow overflow-y-auto p-4">
+                <div class="text-center text-gray-500 py-8">
+                    <i class="fas fa-shopping-cart text-4xl mb-2"></i>
+                    <p>Your cart is empty</p>
+                </div>
+            </div>
+            <div class="p-4 border-t">
+                <div class="flex justify-between mb-4">
+                    <span class="font-semibold">Total:</span>
+                    <span id="cartTotal" class="font-bold">₹0.00</span>
+                </div>
+                <button id="checkoutBtn" class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    Request Quote
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- Search Modal -->
+    <div id="searchModal" class="modal">
+        <div class="modal-content">
+            <div class="p-4 border-b">
+                <div class="flex items-center">
+                    <input type="text" id="searchInput" placeholder="Search agricultural products..." class="flex-grow px-4 py-2 border rounded-l-lg focus:outline-none focus:ring-2 focus:ring-green-600">
+                    <button onclick="closeSearch()" class="bg-gray-200 px-4 py-2 rounded-r-lg hover:bg-gray-300" aria-label="Close search">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="searchResults" class="p-4 max-h-96 overflow-y-auto">
+                <div class="text-center text-gray-500 py-8">
+                    <i class="fas fa-search text-3xl mb-2"></i>
+                    <p>Start typing to search products</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Notification Container -->
+    <div id="notificationContainer"></div>
+    <script>
+        // Cart functionality
+        let cart = [];
+        function updateCart() {
+            const cartCount = document.getElementById('cartCount');
+            const cartCountSidebar = document.getElementById('cartCountSidebar');
+            const floatingCartCount = document.getElementById('floatingCartCount');
+            const cartItems = document.getElementById('cartItems');
+            const cartTotal = document.getElementById('cartTotal');
+            const checkoutBtn = document.getElementById('checkoutBtn');
+            const count = cart.length;
+            cartCount.textContent = count;
+            cartCountSidebar.textContent = count;
+            if (count > 0) {
+                floatingCartCount.textContent = count;
+                floatingCartCount.classList.remove('hidden');
+                cartCount.classList.remove('hidden');
+            } else {
+                floatingCartCount.classList.add('hidden');
+                cartCount.classList.add('hidden');
+            }
+            if (count === 0) {
+                cartItems.innerHTML = `
+                    <div class="text-center text-gray-500 py-8">
+                        <i class="fas fa-shopping-cart text-4xl mb-2"></i>
+                        <p>Your cart is empty</p>
+                    </div>
+                `;
+                cartTotal.textContent = '₹0.00';
+                checkoutBtn.disabled = true;
+            } else {
+                let html = '';
+                let total = 0;
+                cart.forEach((item, index) => {
+                    total += item.price;
+                    html += `
+                        <div class="cart-item bg-gray-50 rounded-lg p-3 mb-3 flex items-center">
+                            <img src="${item.image}" alt="${item.name}" class="w-12 h-12 object-cover rounded">
+                            <div class="ml-3 flex-grow">
+                                <h4 class="font-semibold text-sm">${item.name}</h4>
+                                <p class="text-green-600 font-bold">₹${item.price.toLocaleString()}</p>
+                            </div>
+                            <button onclick="removeFromCart(${index})" class="text-red-500 hover:text-red-700" aria-label="Remove item">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    `;
+                });
+                cartItems.innerHTML = html;
+                cartTotal.textContent = `₹${total.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                checkoutBtn.disabled = false;
+            }
+        }
+        function addToCart(name, price, image) {
+            cart.push({ name, price, image });
+            updateCart();
+            showNotification(`${name} added to cart!`);
+        }
+        function removeFromCart(index) {
+            const removedItem = cart[index].name;
+            cart.splice(index, 1);
+            updateCart();
+            showNotification(`${removedItem} removed from cart`);
+        }
+        function toggleCart() {
+            const cartSidebar = document.getElementById('cartSidebar');
+            cartSidebar.classList.toggle('translate-x-full');
+        }
+        function closeCart() {
+            document.getElementById('cartSidebar').classList.add('translate-x-full');
+        }
+        function showNotification(message) {
+            const notificationContainer = document.getElementById('notificationContainer');
+            // Remove existing notifications
+            while (notificationContainer.firstChild) {
+                notificationContainer.removeChild(notificationContainer.firstChild);
+            }
+            // Create new notification
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = `
+                <i class="fas fa-check-circle mr-2"></i>
+                <span>${message}</span>
+            `;
+            notificationContainer.appendChild(notification);
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.style.transition = 'opacity 0.5s, transform 0.5s';
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateX(100%)';
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.remove();
+                        }
+                    }, 500);
+                }
+            }, 3000);
+        }
+        // Search functionality
+        function toggleSearch() {
+            const searchModal = document.getElementById('searchModal');
+            searchModal.style.display = 'flex';
+            document.getElementById('searchInput').focus();
+        }
+        function closeSearch() {
+            document.getElementById('searchModal').style.display = 'none';
+        }
+        // Mobile menu functionality
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            document.getElementById('mobileMenu').classList.add('open');
+            document.getElementById('backdrop').classList.add('active');
+        });
+        document.getElementById('closeMenuBtn').addEventListener('click', function() {
+            document.getElementById('mobileMenu').classList.remove('open');
+            document.getElementById('backdrop').classList.remove('active');
+        });
+        document.getElementById('backdrop').addEventListener('click', function() {
+            document.getElementById('mobileMenu').classList.remove('open');
+            document.getElementById('backdrop').classList.remove('active');
+        });
+        // Form submission
+        document.getElementById('quoteForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showNotification('Thank you for your request! Our team will contact you within 24 hours.');
+            this.reset();
+        });
+        // Hero slideshow
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.hero-slide');
+        function nextSlide() {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+        setInterval(nextSlide, 5000);
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    // Close mobile menu if open
+                    document.getElementById('mobileMenu').classList.remove('open');
+                    document.getElementById('backdrop').classList.remove('active');
+                }
+            });
+        });
+        // Initialize cart
+        updateCart();
+        // Event Listeners
+        document.getElementById('cartBtn').addEventListener('click', toggleCart);
+        document.getElementById('searchBtn').addEventListener('click', toggleSearch);
+        // Close modals when clicking outside
+        window.addEventListener('click', (e) => {
+            const searchModal = document.getElementById('searchModal');
+            const cartSidebar = document.getElementById('cartSidebar');
+            if (e.target === searchModal) {
+                closeSearch();
+            }
+            if (e.target === cartSidebar) {
+                closeCart();
+            }
+        });
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            // Escape key closes modals
+            if (e.key === 'Escape') {
+                closeSearch();
+                closeCart();
+                document.getElementById('mobileMenu').classList.remove('open');
+                document.getElementById('backdrop').classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
